@@ -28,20 +28,26 @@ async function main() {
     console.log(`registrar address: ${registrarAddr}`);
     const registrar = new ethers.Contract(registrarAddr, RegistrarABI, provider);
 
-    // const totalDomains = await terminusDidProxy.totalSupply();
+    const totalDomains = await terminusDidProxy.totalSupply();
 
-    // for(let i=0; i<totalDomains; i++) {
-    //     const tokenId = await terminusDidProxy.tokenByIndex(i);
-    //     const metadata = await terminusDidProxy.getMetadata(tokenId);
-    //     console.log(`tokenId: ${tokenId} || metadata => domain: ${metadata.domain}, did: ${metadata.did}, notes: ${metadata.notes}, allowSubdomain: ${metadata.allowSubdomain}`);
+    for(let i=0; i<totalDomains; i++) {
+        const tokenId = await terminusDidProxy.tokenByIndex(i);
+        const metadata = await terminusDidProxy.getMetadata(tokenId);
+        console.log(`tokenId: ${tokenId} || metadata => domain: ${metadata.domain}, did: ${metadata.did}, notes: ${metadata.notes}, allowSubdomain: ${metadata.allowSubdomain}`);
 
-    //     const tags: BigInt[] = await terminusDidProxy.getTagKeys(tokenId);
-    //     console.log(`tokenId: ${tokenId} has ${tags.length} extent keys`);
-    //     for (let tag of tags) {
+        const tags: BigInt[] = await terminusDidProxy.getTagKeys(tokenId);
+        console.log(`tokenId: ${tokenId} has ${tags.length} extent keys`);
+        for (let tag of tags) {
+            const ret = await registrar.getterOf(metadata.domain, tag);
+            const resolver = ret.substring(0, 42);
+            const selector = '0x' + ret.substring(42, 50);
 
-    //         console.log(`key ${tag} => value `);
-    //     }
-    // }
+            
+            console.log(resolver);
+            console.log(selector);
+            // console.log(`key ${tag} => value `);
+        }
+    }
 }
 
 main();
