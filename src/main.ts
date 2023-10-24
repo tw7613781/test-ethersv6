@@ -15,7 +15,7 @@ async function main() {
     const latestBlockNum = await provider.getBlockNumber();
 
     console.log(`== connected with blockchain ${network.name} ${network.chainId} with latest height ${latestBlockNum} ==`);
-    
+
     const signer = new ethers.Wallet(PRIVKEY, provider);
 
     console.log(`signer: ${signer.address}`);
@@ -30,22 +30,35 @@ async function main() {
 
     const totalDomains = await terminusDidProxy.totalSupply();
 
-    for(let i=0; i<totalDomains; i++) {
-        const tokenId = await terminusDidProxy.tokenByIndex(i);
+    const iface = new ethers.Interface([
+        "function any(uint256)"
+    ])
+
+    for (let i = 0; i < totalDomains; i++) {
+        const tokenId: BigInt = await terminusDidProxy.tokenByIndex(i);
         const metadata = await terminusDidProxy.getMetadata(tokenId);
         console.log(`tokenId: ${tokenId} || metadata => domain: ${metadata.domain}, did: ${metadata.did}, notes: ${metadata.notes}, allowSubdomain: ${metadata.allowSubdomain}`);
 
         const tags: BigInt[] = await terminusDidProxy.getTagKeys(tokenId);
         console.log(`tokenId: ${tokenId} has ${tags.length} extent keys`);
         for (let tag of tags) {
-            const ret = await registrar.getterOf(metadata.domain, tag);
+            let ret;
+            ret = await registrar.getterOf(metadata.domain, tag);
             const resolver = ret.substring(0, 42);
             const selector = '0x' + ret.substring(42, 50);
 
-            
-            console.log(resolver);
-            console.log(selector);
-            // console.log(`key ${tag} => value `);
+            let data = iface.encodeFunctionData("any", [tokenId]);
+            data = selector + data.substring(10);
+
+            const tx = new ethers.Transaction();
+            tx.to = resolver;
+            tx.data = data;
+            const gas = await provider.estimateGas(tx)
+            tx.gasLimit = gas;
+
+            ret = await provider.call(tx);
+
+            console.log(`key ${tag} => value ${ret}`);
         }
     }
 }
