@@ -1,0 +1,173 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "registrar_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "registry_",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "operator_",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [],
+        "name": "Unauthorized",
+        "type": "error"
+    },
+    {
+        "inputs": [],
+        "name": "_OID_PKCS",
+        "outputs": [
+            {
+                "internalType": "bytes",
+                "name": "",
+                "type": "bytes"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "dnsARecord",
+        "outputs": [
+            {
+                "internalType": "bytes4",
+                "name": "ipv4",
+                "type": "bytes4"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "operator",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "registrar",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "registry",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "rsaPubKey",
+        "outputs": [
+            {
+                "internalType": "bytes",
+                "name": "pubKey",
+                "type": "bytes"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "domain",
+                "type": "string"
+            },
+            {
+                "internalType": "bytes4",
+                "name": "ipv4",
+                "type": "bytes4"
+            }
+        ],
+        "name": "setDnsARecord",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "domain",
+                "type": "string"
+            },
+            {
+                "internalType": "bytes",
+                "name": "pubKey",
+                "type": "bytes"
+            }
+        ],
+        "name": "setRsaPubKey",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "key",
+                "type": "uint256"
+            }
+        ],
+        "name": "tagGetter",
+        "outputs": [
+            {
+                "internalType": "bytes4",
+                "name": "",
+                "type": "bytes4"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    }
+]

@@ -3,6 +3,7 @@ import 'dotenv/config';
 
 const TerminusDIDABI = require('../abis/TerminusDID.json');
 const RegistrarABI = require('../abis/Registrar.json');
+const RootResolverABI = require('../abis/RootResolver.json');
 
 async function main() {
     const NODE_URL = process.env.GOERLI_RPC_URL;
@@ -30,9 +31,9 @@ async function main() {
 
     const totalDomains = await terminusDidProxy.totalSupply();
 
-    const iface = new ethers.Interface([
-        "function any(uint256)"
-    ])
+    // const iface = new ethers.Interface([
+    //     "function any(uint256)"
+    // ])
 
     for (let i = 0; i < totalDomains; i++) {
         const tokenId: BigInt = await terminusDidProxy.tokenByIndex(i);
@@ -47,18 +48,35 @@ async function main() {
             const resolver = ret.substring(0, 42);
             const selector = '0x' + ret.substring(42, 50);
 
-            let data = iface.encodeFunctionData("any", [tokenId]);
-            data = selector + data.substring(10);
+            console.log(resolver, selector);
 
-            const tx = new ethers.Transaction();
-            tx.to = resolver;
-            tx.data = data;
-            const gas = await provider.estimateGas(tx)
-            tx.gasLimit = gas;
+            const resolverContract = new ethers.Contract(resolver, RootResolverABI, provider);
+            // console.log(resolverContract);
+            const contractFuncs = resolverContract.interface.fragments;
+            let value;
+            for(let fragment of contractFuncs) {
+                let functionFragment = <ethers.FunctionFragment> fragment;
+                // console.log(functionFragment.selector);
+                if (functionFragment.selector === selector) {
+                    // found the method
+                    const getter = resolverContract.getFunction(functionFragment);
+                    value = await getter.staticCall(tokenId);
+                    break;
+                }
+            }
 
-            ret = await provider.call(tx);
+            // let data = iface.encodeFunctionData("any", [tokenId]);
+            // data = selector + data.substring(10);
 
-            console.log(`key ${tag} => value ${ret}`);
+            // const tx = new ethers.Transaction();
+            // tx.to = resolver;
+            // tx.data = data;
+            // const gas = await provider.estimateGas(tx)
+            // tx.gasLimit = gas;
+
+            // ret = await provider.call(tx);
+
+            console.log(`key ${tag} => value ${value}`);
         }
     }
 }
